@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Previsão do Tempo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Previsão do Tempo</h1>
+        <form id="weather-form">
+            <input type="text" id="city" placeholder="Digite o nome da cidade" required>
+            <button type="submit">Consultar</button>
+        </form>
+        <div id="weather-result">
+            <!-- Os resultados serão exibidos aqui -->
+        </div>
+    </div>
+    <script>
+        document.getElementById('weather-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const city = document.getElementById('city').value;
+            const resultDiv = document.getElementById('weather-result');
+
+            try {
+                const response = await fetch(`/weather?city=${city}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <h2>Clima em ${data.city}, ${data.country}</h2>
+                        <p>Temperatura: ${data.temperature} °C</p>
+                        <p>Condição: ${data.weather}</p>
+                        <p>Umidade: ${data.humidity}%</p>
+                        <p>Velocidade do Vento: ${data.windSpeed} m/s</p>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<p>${data.error}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p>Erro ao obter dados do tempo.</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
